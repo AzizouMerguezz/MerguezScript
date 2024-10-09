@@ -1,0 +1,875 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "🔥 MerguezScript 🔫",
+   LoadingTitle = "🔫 MerguezScript 💥",
+   LoadingSubtitle = "AzizouMerguez",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "MerguezScript"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = true, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Key | AzizouMerguez",
+      Subtitle = "Key System",
+      Note = "Key In Discord Server",
+      FileName = "Hubkey", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = true, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"1"} -- https://pastebin.com/raw/Gs715aDv List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+local MainTab = Window:CreateTab("🏠 Home", nil) -- Title, Image
+local MainSection = MainTab:CreateSection("Main")
+
+Rayfield:Notify({
+   Title = "Script ✅",
+   Content = "by AzizouMerguez",
+   Duration = 5,
+   Image = 13047715178,
+   Actions = { -- Notification Buttons
+      Ignore = {
+         Name = "Okay!",
+         Callback = function()
+         print("The user tapped Okay!")
+      end
+   },
+},
+})
+-------------------------------------------------------------------------------------------------------------------------------------
+
+local ButtonFly = MainTab:CreateToggle({
+    Name = "🕊️ Fly",
+    Callback = function()
+        _G.flyEnabled = not _G.flyEnabled -- Toggle fly state
+        
+        if _G.flyEnabled then
+            -- Active le vol
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            local flySpeed = 50 -- Ajustez cette valeur pour changer la vitesse de vol
+            local bodyVelocity = Instance.new("BodyVelocity")
+            bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+            bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
+            bodyVelocity.Parent = humanoidRootPart
+
+            -- Gardez le personnage en l'air
+            local function onFly()
+                local userInputService = game:GetService("UserInputService")
+                local camera = game.Workspace.CurrentCamera
+
+                while _G.flyEnabled do
+                    wait()
+                    if not bodyVelocity then return end -- Vérifiez si bodyVelocity existe
+
+                    local direction = Vector3.new(0, 0, 0)
+
+                    -- Contrôles de direction
+                    if userInputService:IsKeyDown(Enum.KeyCode.W) then
+                        direction = direction + camera.CFrame.LookVector
+                    end
+                    if userInputService:IsKeyDown(Enum.KeyCode.S) then
+                        direction = direction - camera.CFrame.LookVector
+                    end
+                    if userInputService:IsKeyDown(Enum.KeyCode.A) then
+                        direction = direction - camera.CFrame.RightVector
+                    end
+                    if userInputService:IsKeyDown(Enum.KeyCode.D) then
+                        direction = direction + camera.CFrame.RightVector
+                    end
+                    if userInputService:IsKeyDown(Enum.KeyCode.Space) then
+                        direction = direction + Vector3.new(0, 1, 0) -- Voler vers le haut
+                    end
+                    if userInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+                        direction = direction - Vector3.new(0, 1, 0) -- Voler vers le bas
+                    end
+
+                    -- Met à jour la vélocité en fonction de la direction
+                    if direction.Magnitude > 0 then
+                        bodyVelocity.Velocity = direction.Unit * flySpeed
+                    else
+                        bodyVelocity.Velocity = Vector3.new(0, 0, 0) -- Si aucune touche n'est enfoncée, arrêter le mouvement
+                    end
+
+                    -- Gérer la descente
+                    if userInputService:IsKeyDown(Enum.KeyCode.Space) then
+                        bodyVelocity.Velocity = bodyVelocity.Velocity + Vector3.new(0, flySpeed, 0)
+                    elseif userInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+                        -- Descendre sans dégâts
+                        local camLookVector = camera.CFrame.LookVector
+                        local downwardVelocity = math.min(0, camLookVector.Y) * -flySpeed
+                        bodyVelocity.Velocity = bodyVelocity.Velocity + Vector3.new(0, downwardVelocity, 0)
+                    else
+                        bodyVelocity.Velocity = Vector3.new(bodyVelocity.Velocity.X, math.max(0, bodyVelocity.Velocity.Y), bodyVelocity.Velocity.Z)
+                    end
+
+                    -- Protection contre les dégâts de chute
+                    if humanoidRootPart.Position.Y < 0 then
+                        humanoidRootPart.Position = Vector3.new(humanoidRootPart.Position.X, 5, humanoidRootPart.Position.Z)
+                    end
+                end
+
+                -- Lorsque le vol est désactivé
+                bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+                bodyVelocity:Destroy() -- Nettoyer à la désactivation
+            end
+
+            -- Démarre la boucle de vol
+            onFly()
+        else
+            -- Lorsque le vol est désactivé
+            if bodyVelocity then
+                bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+                bodyVelocity:Destroy() -- Nettoyer à la désactivation
+            end
+        end
+    end,
+})
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+local Button = MainTab:CreateToggle({
+   Name = "💨   Infinite Jump",
+   Callback = function()
+       --Toggles the infinite jump between on or off on every script run
+_G.infinjump = not _G.infinjump
+
+if _G.infinJumpStarted == nil then
+	--Ensures this only runs once to save resources
+	_G.infinJumpStarted = true
+	
+	--Notifies readiness
+	game.StarterGui:SetCore("SendNotification", {Title="MerguezHub"; Text="Infinite Jump Enable!"; Duration=5;})
+
+	--The actual infinite jump
+	local plr = game:GetService('Players').LocalPlayer
+	local m = plr:GetMouse()
+	m.KeyDown:connect(function(k)
+		if _G.infinjump then
+			if k:byte() == 32 then
+			humanoid = game:GetService'Players'.LocalPlayer.Character:FindFirstChildOfClass('Humanoid')
+			humanoid:ChangeState('Jumping')
+			wait()
+			humanoid:ChangeState('Seated')
+			end
+		end
+	end)
+end
+   end,
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+local Button = MainTab:CreateToggle({
+    Name = "🚪   Noclip",
+    Callback = function()
+        -- Toggle pour activer/désactiver le noclip
+        _G.noclip = not _G.noclip
+
+        if _G.noclipStarted == nil then
+            -- Assure que cela ne s'exécute qu'une seule fois pour économiser des ressources
+            _G.noclipStarted = true
+
+            -- Notifie que le noclip est activé
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "Noclip enable!",
+                Duration = 5
+            })
+
+            -- Noclip
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+
+            -- Boucle pour gérer le noclip
+            local function noclip()
+                while wait(0.1) do
+                    if _G.noclip then
+                        for _, part in pairs(character:GetChildren()) do
+                            if part:IsA("BasePart") then
+                                part.CanCollide = false
+                            end
+                        end
+                    else
+                        for _, part in pairs(character:GetChildren()) do
+                            if part:IsA("BasePart") then
+                                part.CanCollide = true
+                            end
+                        end
+                    end
+                end
+            end
+
+            -- Lancer la fonction noclip dans une coroutine
+            coroutine.wrap(noclip)()
+        end
+    end,
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+local Button = MainTab:CreateToggle({
+    Name = "🛡️   God Mode",
+    Callback = function()
+        -- Toggle pour activer/désactiver le God Mode
+        _G.godMode = not _G.godMode
+
+        if _G.godMode then
+            -- Notifie que le God Mode est activé
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "God Mode Enable!",
+                Duration = 5
+            })
+
+            -- Référence au joueur et à son humanoïde
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoid = character:FindFirstChildOfClass('Humanoid')
+
+            -- Définit la santé maximale à l'infini
+            humanoid.MaxHealth = math.huge
+            humanoid.Health = humanoid.MaxHealth  -- Restaure la santé à sa valeur maximale
+
+            -- Empêche la mort en mettant un hook sur le changement de santé
+            humanoid.HealthChanged:Connect(function()
+                if humanoid.Health <= 0 and _G.godMode then
+                    humanoid.Health = humanoid.MaxHealth  -- Restaure la santé si le God Mode est activé
+                end
+            end)
+        else
+            -- Notifie que le God Mode est désactivé
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "God Mode Disable!",
+                Duration = 5
+            })
+
+            -- Remets la santé maximale à 100
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoid = character:FindFirstChildOfClass('Humanoid')
+
+            if humanoid then
+                humanoid.MaxHealth = 100  -- Remets la santé maximale à 100
+                humanoid.Health = humanoid.MaxHealth  -- Restaure la santé à 100
+            end
+        end
+    end,
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+local Slider = MainTab:CreateSlider({
+   Name = "WalkSpeed Slider",
+   Range = {1, 350},
+   Increment = 1,
+   Suffix = "Speed",
+   CurrentValue = 16,
+   Flag = "sliderws", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = (Value)
+   end,
+})
+
+local Slider = MainTab:CreateSlider({
+   Name = "JumpPower Slider",
+   Range = {1, 350},
+   Increment = 1,
+   Suffix = "Speed",
+   CurrentValue = 16,
+   Flag = "sliderjp", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = (Value)
+   end,
+})
+
+
+
+
+
+--local Dropdown = MainTab:CreateDropdown({
+  -- Name = "Select Area",
+ --  Options = {"Starter World","Pirate Island","Pineapple Paradise"},
+  -- CurrentOption = {"Starter World"},
+ --  MultipleOptions = false,
+ --  Flag = "-560 495 -572", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+ --  Callback = function(Option)
+ --       print(Option)
+ --  end,
+--})
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local TPTab = Window:CreateTab("🏝 Teleports", nil) -- Title, Image
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local TPTab = Window:CreateTab("🎲 Misc", nil) -- Title, Image
+----------------------------------------------------------------------------------------BTOOLS-------------------------------------------------------------------------------------------------------------------------------------
+
+local Button1 = TPTab:CreateButton({
+   Name = "🔨   Btools",
+   Callback = function()
+
+backpack = game:GetService("Players").LocalPlayer.Backpack
+
+hammer = Instance.new("HopperBin")
+hammer.Name = "Hammer"
+hammer.BinType = 4
+hammer.Parent = backpack
+
+--cloneTool = Instance.new("HopperBin")
+--cloneTool.Name = "Clone"
+--cloneTool.BinType = 3
+--cloneTool.Parent = backpack
+
+--grabTool = Instance.new("HopperBin")
+--grabTool.Name = "Grab"
+--grabTool.BinType = 2
+--grabTool.Parent = backpack
+end,
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+local Button = TPTab:CreateToggle({
+    Name = "🌀   Spin",
+    Callback = function()
+        -- Toggle pour activer/désactiver la rotation rapide
+        _G.spinMode = not _G.spinMode
+
+        if _G.spinMode then
+            -- Notifie que le mode toupie est activé
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "Spin Enable!",
+                Duration = 5
+            })
+
+            -- Référence au joueur et à son HumanoidRootPart
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            -- Fonction pour faire tourner le personnage
+            local function spinCharacter()
+                while _G.spinMode do
+                    humanoidRootPart.CFrame = humanoidRootPart.CFrame * CFrame.Angles(0, math.rad(250), 0)  -- Rotation rapide autour de l'axe Y
+                    wait(0.05)  -- Attendre un court instant entre les rotations
+                end
+            end
+
+            -- Démarre la rotation
+            spinCharacter()
+
+        else
+            -- Notifie que le mode toupie est désactivé
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "Spin Disable!",
+                Duration = 5
+            })
+        end
+    end,
+})
+
+
+local UserInputService = game:GetService("UserInputService")
+
+local UserInputService = game:GetService("UserInputService")
+
+local Button = TPTab:CreateToggle({ 
+    Name = "📍   CTRL TP",
+    Callback = function()
+        -- Toggle pour activer/désactiver la téléportation
+        _G.tpMode = not _G.tpMode
+
+        if _G.tpMode then
+            -- Notifie que le mode de téléportation est activé
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "TP enabled! Ctrl+Click !",
+                Duration = 5
+            })
+
+            -- Référence au joueur
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+            -- Écouteur pour les clics de souris
+            local mouse = player:GetMouse()
+            mouse.Button1Down:Connect(function()
+                if _G.tpMode and UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+                    -- Vérifiez si le HumanoidRootPart existe
+                    if humanoidRootPart then
+                        local targetPosition = mouse.Hit.Position
+
+                        -- Utiliser un Raycast pour déterminer la position cible
+                        local rayOrigin = targetPosition + Vector3.new(0, 100, 0) -- Élever le rayon au-dessus du mur
+                        local rayDirection = Vector3.new(0, -200, 0) -- Raycast vers le bas
+
+                        local raycastResult = workspace:Raycast(rayOrigin, rayDirection)
+
+                        if raycastResult then
+                            -- Position du mur où le raycast a touché
+                            local wallPosition = raycastResult.Position
+                            humanoidRootPart.CFrame = CFrame.new(wallPosition + Vector3.new(0, 5, 0))  -- Ajuster la hauteur pour éviter de tomber
+                        end
+                    end
+                end
+            end)
+
+        else
+            -- Notifie que le mode de téléportation est désactivé
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "TP disabled!",
+                Duration = 5
+            })
+        end
+    end,
+})
+
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Crée un ScreenGui pour afficher les coordonnées
+local screenGui = Instance.new("ScreenGui", player.PlayerGui)
+screenGui.Name = "CoordScreenGui"
+
+-- Crée un TextLabel pour afficher les coordonnées
+local coordLabel = Instance.new("TextLabel")
+coordLabel.Size = UDim2.new(0, 0, 0, 0)  -- Taille du TextLabel
+coordLabel.Position = UDim2.new(0.5, 0, 0, 950)  -- Centré en haut de l'écran
+--coordLabel.BackgroundColor3 = Color3.new(0, 0, 0)  -- Couleur de fond noire
+coordLabel.TextColor3 = Color3.new(1, 1, 1)  -- Texte blanc
+coordLabel.TextSize = 24
+coordLabel.TextStrokeTransparency = 0.5
+coordLabel.Text = "Coordinates: X: 0, Y: 0, Z: 0"  -- Valeurs par défaut
+coordLabel.Parent = screenGui  -- Ajoute le TextLabel au ScreenGui
+--coordLabel.Visible = false  -- Cache par défaut
+
+-- Toggle pour activer/désactiver l'affichage des coordonnées
+local Button = TPTab:CreateToggle({
+    Name = "📍   Coordinates",
+    Callback = function()
+        _G.coordMode = not _G.coordMode  -- Alterne l'état du mode
+
+        if _G.coordMode then
+            -- Notifie que l'affichage des coordonnées est activé
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "Coordinates enabled!",
+                Duration = 5
+            })
+
+            coordLabel.Visible = true  -- Affiche le label des coordonnées
+
+            -- Met à jour les coordonnées en temps réel
+            while _G.coordMode do
+                wait(0.1)  -- Met à jour toutes les 0.1 secondes
+                if humanoidRootPart then
+                    local position = humanoidRootPart.Position
+                    coordLabel.Text = string.format("Coordinates: X: %.2f, Y: %.2f, Z: %.2f", position.X, position.Y, position.Z)
+                end
+            end
+
+        else
+            -- Notifie que l'affichage des coordonnées est désactivé
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "Coordinates Disabled!",
+                Duration = 5
+            })
+
+            coordLabel.Visible = false  -- Cache le label des coordonnées
+        end
+    end,
+})
+---------------------------------------------------------------------------------------------
+local Button2 = TPTab:CreateButton({
+    Name = "🌞   Day",
+    Callback = function()
+        -- Changer le temps à 14h00 (2 PM)
+        game.Lighting.TimeOfDay = "14:00:00"
+        
+        -- Notification pour confirmer que le temps a été changé
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "MerguezHub",
+            Text = "Le temps a été mis à jour à jour !",
+            Duration = 5
+        })
+    end,
+})
+
+local Button2 = TPTab:CreateButton({
+    Name = "🌙   Night",
+    Callback = function()
+        -- Changer le temps à 14h00 (2 PM)
+        game.Lighting.TimeOfDay = "00:00:00"
+        
+        -- Notification pour confirmer que le temps a été changé
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "MerguezHub",
+            Text = "Le temps a été mis à jour à jour !",
+            Duration = 5
+        })
+    end,
+})
+
+
+
+--------------------------------------------------------------------------------------------------
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+local TPTab = Window:CreateTab("💯 ThaBronx2", nil) -- Title, Image
+
+local function teleportPlayer(position)
+    local player = game.Players.LocalPlayer
+
+    -- Vérifier si le joueur et son personnage existent
+    if player and player.Character then
+        local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
+        
+        -- Vérifier si HumanoidRootPart est trouvé
+        if humanoidRootPart then
+            -- Ajouter un décalage vers le haut pour éviter les collisions avec le sol
+            local targetPosition = position + Vector3.new(0, 5, 0) -- Ajustement de 5 unités en hauteur
+            
+            -- Effectuer la téléportation
+            humanoidRootPart.CFrame = CFrame.new(targetPosition)
+            print("Téléportation réussie vers : " .. tostring(targetPosition))
+        else
+            warn("HumanoidRootPart introuvable pour le joueur : " .. player.Name)
+        end
+    else
+        warn("Le joueur ou le personnage n'est pas prêt.")
+    end
+end
+
+-- Coordonnées des îles
+local teleportPositions = {
+    Bank = Vector3.new(-472, 284, -1214), -- Change les coordonnées pour l'emplacement exact
+    GunStore = Vector3.new(92970, 122098, 17021), -- Exemples de coordonnées
+    ExoticGunStore = Vector3.new(60834, 87610, -351),
+    Pizzeria = Vector3.new(-1013, 253.5, -949),
+    CarDealer = Vector3.new(-691, 254, -1261),
+    RiceSeller = Vector3.new(81073, 133133, 166),
+    RiceFarm = Vector3.new(36889, 14074, 5848),
+    Laundry = Vector3.new(-1189, 254, -679),
+    Jail = Vector3.new(112503.85, 121856, 33663.57)
+}
+-- Boutons de téléportation
+local Button1 = TPTab:CreateButton({
+   Name = "💳 Bank",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Bank)
+        end)
+   end,
+})
+
+local Button2 = TPTab:CreateButton({
+   Name = "🔫 Gun Store",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.GunStore)
+        end)
+   end,
+})
+
+local Button3 = TPTab:CreateButton({
+   Name = "👿 Exotic Gun Store",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.ExoticGunStore)
+        end)
+   end,
+})
+
+local Button4 = TPTab:CreateButton({
+   Name = "🍕 Pizzeria",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Pizzeria)
+        end)
+   end,
+})
+
+local Button5 = TPTab:CreateButton({
+   Name = "🚗 Car Dealer",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.CarDealer)
+        end)
+   end,
+})
+
+local Button6 = TPTab:CreateButton({
+   Name = "🍚 Rice Seller",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.RiceSeller)
+        end)
+   end,
+})
+
+local Button7 = TPTab:CreateButton({
+   Name = "🍲 Rice Farm",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.RiceFarm)
+        end)
+   end,
+})
+
+local Button8 = TPTab:CreateButton({
+   Name = "🧼 Laundry",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Laundry)
+        end)
+   end,
+})
+
+local Button9 = TPTab:CreateButton({
+   Name = "⛓️ Jail",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Jail)
+        end)
+   end,
+})
+----------------------------------------------------------------------------------------------------------------------------------
+
+
+--local TPTab = Window:CreateTab("Fight", nil) -- Title, Image
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------ESP--------------------------------------------------------------------
+_G.FriendColor = Color3.fromRGB(0, 0, 255)
+_G.EnemyColor = Color3.fromRGB(255, 0, 0)
+_G.UseTeamColor = true
+
+local Holder = Instance.new("Folder", game.CoreGui)
+Holder.Name = "ESP"
+
+local Box = Instance.new("BoxHandleAdornment")
+Box.Name = "nilBox"
+Box.Size = Vector3.new(1, 2, 1)
+Box.Color3 = Color3.new(100 / 255, 100 / 255, 100 / 255)
+Box.Transparency = 0.7
+Box.ZIndex = 0
+Box.AlwaysOnTop = false
+Box.Visible = false
+
+local NameTag = Instance.new("BillboardGui")
+NameTag.Name = "nilNameTag"
+NameTag.Enabled = false
+NameTag.Size = UDim2.new(0, 200, 0, 50)
+NameTag.AlwaysOnTop = true
+NameTag.StudsOffset = Vector3.new(0, 1.8, 0)
+local Tag = Instance.new("TextLabel", NameTag)
+Tag.Name = "Tag"
+Tag.BackgroundTransparency = 1
+Tag.Position = UDim2.new(0, -50, 0, 0)
+Tag.Size = UDim2.new(0, 300, 0, 20)
+Tag.TextSize = 15
+Tag.TextColor3 = Color3.new(100 / 255, 100 / 255, 100 / 255)
+Tag.TextStrokeColor3 = Color3.new(0 / 255, 0 / 255, 0 / 255)
+Tag.TextStrokeTransparency = 0.4
+Tag.Text = "nil"
+Tag.Font = Enum.Font.SourceSansBold
+Tag.TextScaled = false
+
+local LoadCharacter = function(v)
+	repeat wait() until v.Character ~= nil
+	v.Character:WaitForChild("Humanoid")
+	local vHolder = Holder:FindFirstChild(v.Name)
+	vHolder:ClearAllChildren()
+	local b = Box:Clone()
+	b.Name = v.Name .. "Box"
+	b.Adornee = v.Character
+	b.Parent = vHolder
+	local t = NameTag:Clone()
+	t.Name = v.Name .. "NameTag"
+	t.Enabled = true
+	t.Parent = vHolder
+	t.Adornee = v.Character:WaitForChild("Head", 5)
+	if not t.Adornee then
+		return UnloadCharacter(v)
+	end
+	t.Tag.Text = v.Name
+	b.Color3 = Color3.new(v.TeamColor.r, v.TeamColor.g, v.TeamColor.b)
+	t.Tag.TextColor3 = Color3.new(v.TeamColor.r, v.TeamColor.g, v.TeamColor.b)
+	local Update
+	local UpdateNameTag = function()
+		if not pcall(function()
+			v.Character.Humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+			local maxh = math.floor(v.Character.Humanoid.MaxHealth)
+			local h = math.floor(v.Character.Humanoid.Health)
+		end) then
+			Update:Disconnect()
+		end
+	end
+	UpdateNameTag()
+	Update = v.Character.Humanoid.Changed:Connect(UpdateNameTag)
+end
+
+local UnloadCharacter = function(v)
+	local vHolder = Holder:FindFirstChild(v.Name)
+	if vHolder and (vHolder:FindFirstChild(v.Name .. "Box") ~= nil or vHolder:FindFirstChild(v.Name .. "NameTag") ~= nil) then
+		vHolder:ClearAllChildren()
+	end
+end
+
+local LoadPlayer = function(v)
+	local vHolder = Instance.new("Folder", Holder)
+	vHolder.Name = v.Name
+	v.CharacterAdded:Connect(function()
+		pcall(LoadCharacter, v)
+	end)
+	v.CharacterRemoving:Connect(function()
+		pcall(UnloadCharacter, v)
+	end)
+	v.Changed:Connect(function(prop)
+		if prop == "TeamColor" then
+			UnloadCharacter(v)
+			wait()
+			LoadCharacter(v)
+		end
+	end)
+	LoadCharacter(v)
+end
+
+local UnloadPlayer = function(v)
+	UnloadCharacter(v)
+	local vHolder = Holder:FindFirstChild(v.Name)
+	if vHolder then
+		vHolder:Destroy()
+	end
+end
+
+for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+	spawn(function() pcall(LoadPlayer, v) end)
+end
+
+game:GetService("Players").PlayerAdded:Connect(function(v)
+	pcall(LoadPlayer, v)
+end)
+
+game:GetService("Players").PlayerRemoving:Connect(function(v)
+	pcall(UnloadPlayer, v)
+end)
+
+game:GetService("Players").LocalPlayer.NameDisplayDistance = 0
+
+if _G.Reantheajfdfjdgs then
+    return
+end
+
+_G.Reantheajfdfjdgs = ":suifayhgvsdghfsfkajewfrhk321rk213kjrgkhj432rj34f67df"
+
+local players = game:GetService("Players")
+local plr = players.LocalPlayer
+
+function esp(target, color)
+    if target.Character then
+        if not target.Character:FindFirstChild("GetReal") then
+            local highlight = Instance.new("Highlight")
+            highlight.RobloxLocked = true
+            highlight.Name = "GetReal"
+            highlight.Adornee = target.Character
+            highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            highlight.FillColor = color
+            highlight.Parent = target.Character
+        else
+            target.Character.GetReal.FillColor = color
+        end
+    end
+end
+
+while task.wait() do
+    for i, v in pairs(players:GetPlayers()) do
+        if v ~= plr then
+            esp(v, _G.UseTeamColor and v.TeamColor.Color or ((plr.TeamColor == v.TeamColor) and _G.FriendColor or _G.EnemyColor))
+        end
+    end
+end
+
+-- tp
+local UIS = game:GetService("UserInputService")
+
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
+
+
+function GetCharacter()
+   return game.Players.LocalPlayer.Character
+end
+
+function Teleport(pos)
+   local Char = GetCharacter()
+   if Char then
+       Char:MoveTo(pos)
+   end
+end
+
+
+UIS.InputBegan:Connect(function(input)
+   if input.UserInputType == Enum.UserInputType.MouseButton1 and UIS:IsKeyDown(Enum.KeyCode.LeftControl) then
+       Teleport(Mouse.Hit.p)
+   end
+end)
+---------------------------------------------------
