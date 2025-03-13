@@ -345,6 +345,33 @@ local TPTab = Window:CreateTab("🏝 Teleports", nil) -- Title, Image
 
 local TPTab = Window:CreateTab("🎲 Misc", nil) -- Title, Image
 ----------------------------------------------------------------------------------------BTOOLS-------------------------------------------------------------------------------------------------------------------------------------
+local Button = MainTab:CreateToggle({
+    Name = "🛠️ CTRL + Delete",
+    Callback = function()
+        _G.BToolsEnabled = not _G.BToolsEnabled
+
+        if _G.BToolsStarted == nil then
+            _G.BToolsStarted = true
+            
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub", 
+                Text = "BTools Activé!", 
+                Duration = 5
+            })
+            
+            game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+                if _G.BToolsEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 and 
+                   game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
+                    local target = game:GetService("Players").LocalPlayer:GetMouse().Target
+                    if target then
+                        target:Destroy()
+                    end
+                end
+            end)
+        end
+    end,
+})
+
 
 local Button1 = TPTab:CreateButton({
    Name = "🔨   Btools",
