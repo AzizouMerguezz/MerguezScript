@@ -345,8 +345,8 @@ local TPTab = Window:CreateTab("🏝 Teleports", nil) -- Title, Image
 
 local TPTab = Window:CreateTab("🎲 Misc", nil) -- Title, Image
 ----------------------------------------------------------------------------------------BTOOLS-------------------------------------------------------------------------------------------------------------------------------------
-local Button = TPtad:CreateToggle({
-    Name = "🛠️ CTRL + Delete",
+local Button = TPTab:CreateToggle({
+    Name = "🛠️ BTools",
     Callback = function()
         _G.BToolsEnabled = not _G.BToolsEnabled
 
@@ -371,7 +371,6 @@ local Button = TPtad:CreateToggle({
         end
     end,
 })
-
 
 local Button1 = TPTab:CreateButton({
    Name = "🔨   Btools",
