@@ -328,7 +328,7 @@ local Slider = MainTab:CreateSlider({
 
 
 
-local TPTab = Window:CreateTab("🏝 Teleports", nil) -- Title, Image
+--local TPTab = Window:CreateTab("🏝 Teleports", nil) -- Title, Image
 
 
 
