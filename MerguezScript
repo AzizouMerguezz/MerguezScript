@@ -368,6 +368,42 @@ local Button = TPTab:CreateToggle({
     end,
 })
 
+local Button = TPTab:CreateToggle({
+    Name = "📏   Reach",
+    Callback = function()
+        _G.reachMode = not _G.reachMode
+
+        if _G.reachMode then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "Reach Enable!",
+                Duration = 5
+            })
+
+            -- Augmente la portée d'activation des ProximityPrompts
+            for _, prompt in pairs(workspace:GetDescendants()) do
+                if prompt:IsA("ProximityPrompt") then
+                    prompt.MaxActivationDistance = 100 -- Augmente la distance d'interaction
+                end
+            end
+
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "Reach Disable!",
+                Duration = 5
+            })
+
+            -- Rétablit la distance d'origine
+            for _, prompt in pairs(workspace:GetDescendants()) do
+                if prompt:IsA("ProximityPrompt") then
+                    prompt.MaxActivationDistance = 10 -- Distance par défaut
+                end
+            end
+        end
+    end,
+})
+
 
 local Button1 = TPTab:CreateButton({
    Name = "🔨   Btools",
