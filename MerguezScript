@@ -329,6 +329,41 @@ local Slider = MainTab:CreateSlider({
 local TPTab = Window:CreateTab("🏝 Teleports", nil) -- Title, Image
 
 
+local Distance = 10 -- Valeur par défaut
+local Keybind = Enum.KeyCode.T -- Touche par défaut
+
+local function Teleport()
+    local player = game.Players.LocalPlayer
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame + (player.Character.HumanoidRootPart.CFrame.lookVector * Distance)
+    end
+end
+
+TPTab:CreateSlider({
+    Name = "Distance de TP",
+    Range = {1, 100},
+    Increment = 1,
+    Suffix = " studs",
+    CurrentValue = Distance,
+    Callback = function(Value)
+        Distance = Value
+    end
+})
+
+TPTab:CreateKeybind({
+    Name = "Touche de TP",
+    CurrentKeybind = Keybind,
+    HoldToInteract = false,
+    Callback = function(Key)
+        Keybind = Key
+    end
+})
+
+game:GetService("UserInputService").InputBegan:Connect(function(input, processed)
+    if not processed and input.KeyCode == Keybind then
+        Teleport()
+    end
+end)
 
 
 
