@@ -326,49 +326,9 @@ local Slider = MainTab:CreateSlider({
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local UserInputService = game:GetService("UserInputService")
+
 
 local TPTab = Window:CreateTab("🏝 Teleports", nil) -- Title, Image
-
-local Distance = 10 -- Valeur par défaut
-local Keybind = Enum.KeyCode.T -- Touche par défaut
-
-local function Teleport()
-    local player = game.Players.LocalPlayer
-    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-        local HRP = player.Character.HumanoidRootPart
-        if not HRP.Anchored then -- Vérifie si le joueur n'est pas bloqué
-            HRP.CFrame = HRP.CFrame + (HRP.CFrame.lookVector * Distance)
-        end
-    end
-end
-
-TPTab:CreateSlider({
-    Name = "Distance de TP",
-    Range = {1, 100},
-    Increment = 1,
-    Suffix = " studs",
-    CurrentValue = Distance,
-    Callback = function(Value)
-        Distance = Value
-    end
-})
-
-TPTab:CreateKeybind({
-    Name = "Touche de TP",
-    CurrentKeybind = Keybind,
-    HoldToInteract = false,
-    Callback = function(Key)
-        Keybind = Key
-        print("Nouvelle touche assignée :", Keybind)
-    end
-})
-
-UserInputService.InputBegan:Connect(function(input)
-    if input.KeyCode == Keybind then
-        Teleport()
-    end
-end)
 
 
 
