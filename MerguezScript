@@ -626,8 +626,10 @@ local Button2 = TPTab:CreateButton({
 })
 
 --------------------------------------------------------------------------------------------------
+if game.PlaceId == 104715542330896 then
+    local TPTab = Window:CreateTab("💯 BlockSpin", nil)
 
-local TPTab = Window:CreateTab("💯 BlockSpin", nil)
+
 
 local Button2 = TPTab:CreateButton({
     Name = "⚡ Max Stamina",
@@ -637,12 +639,14 @@ local Button2 = TPTab:CreateButton({
     end,
 })
 
-
+end
 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-local TPTab = Window:CreateTab("💯 ThaBronx2", nil) -- Title, Image
+if game.PlaceId == 16472538603 then
+    local TPTab = Window:CreateTab("💯 ThaBronx2", nil) -- Title, Image:
+
 
 local function teleportPlayer(position)
     local player = game.Players.LocalPlayer
@@ -760,6 +764,7 @@ local Button9 = TPTab:CreateButton({
         end)
    end,
 })
+end
 ----------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -947,4 +952,5 @@ UIS.InputBegan:Connect(function(input)
        Teleport(Mouse.Hit.p)
    end
 end)
+
 ---------------------------------------------------
