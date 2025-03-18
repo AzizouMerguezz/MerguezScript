@@ -595,7 +595,7 @@ hammer.Parent = backpack
 end,
 })
 
-local Button2 = TPTab:CreateButton({
+local Button2 = MapTab:CreateButton({
     Name = "🌞   Day",
     Callback = function()
         -- Changer le temps à 14h00 (2 PM)
@@ -610,7 +610,7 @@ local Button2 = TPTab:CreateButton({
     end,
 })
 
-local Button2 = TPTab:CreateButton({
+local Button2 = MapTab:CreateButton({
     Name = "🌙   Night",
     Callback = function()
         -- Changer le temps à 14h00 (2 PM)
