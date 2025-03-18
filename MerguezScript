@@ -622,7 +622,15 @@ local Button2 = TPTab:CreateButton({
 
 --------------------------------------------------------------------------------------------------
 
+local TPTab = Window:CreateTab("💯 BlockSpin", nil)
 
+local Button2 = TPTab:CreateButton({
+    Name = "⚡ Max Stamina",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        player:SetAttribute("MaxStamina", 1000000000)
+    end,
+})
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
