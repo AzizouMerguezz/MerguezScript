@@ -341,92 +341,7 @@ local Slider = MainTab:CreateSlider({
 
 local TPTab = Window:CreateTab("🎲 Misc", nil) -- Title, Image
 ----------------------------------------------------------------------------------------BTOOLS-------------------------------------------------------------------------------------------------------------------------------------
-local Button = TPTab:CreateToggle({
-    Name = "🛠️ CTRL + Delete",
-    Callback = function()
-        _G.BToolsEnabled = not _G.BToolsEnabled
 
-        if _G.BToolsStarted == nil then
-            _G.BToolsStarted = true
-            
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "MerguezHub", 
-                Text = "BTools Activé!", 
-                Duration = 5
-            })
-            
-            game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-                if _G.BToolsEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 and 
-                   game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
-                    local target = game:GetService("Players").LocalPlayer:GetMouse().Target
-                    if target then
-                        target:Destroy()
-                    end
-                end
-            end)
-        end
-    end,
-})
-
-local Button = TPTab:CreateToggle({
-    Name = "📏   Reach",
-    Callback = function()
-        _G.reachMode = not _G.reachMode
-
-        if _G.reachMode then
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "MerguezHub",
-                Text = "Reach Enable!",
-                Duration = 5
-            })
-
-            -- Augmente la portée d'activation des ProximityPrompts
-            for _, prompt in pairs(workspace:GetDescendants()) do
-                if prompt:IsA("ProximityPrompt") then
-                    prompt.MaxActivationDistance = 100 -- Augmente la distance d'interaction
-                end
-            end
-
-        else
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "MerguezHub",
-                Text = "Reach Disable!",
-                Duration = 5
-            })
-
-            -- Rétablit la distance d'origine
-            for _, prompt in pairs(workspace:GetDescendants()) do
-                if prompt:IsA("ProximityPrompt") then
-                    prompt.MaxActivationDistance = 10 -- Distance par défaut
-                end
-            end
-        end
-    end,
-})
-
-
-local Button1 = TPTab:CreateButton({
-   Name = "🔨   Btools",
-   Callback = function()
-
-backpack = game:GetService("Players").LocalPlayer.Backpack
-
-hammer = Instance.new("HopperBin")
-hammer.Name = "Hammer"
-hammer.BinType = 4
-hammer.Parent = backpack
-
---cloneTool = Instance.new("HopperBin")
---cloneTool.Name = "Clone"
---cloneTool.BinType = 3
---cloneTool.Parent = backpack
-
---grabTool = Instance.new("HopperBin")
---grabTool.Name = "Grab"
---grabTool.BinType = 2
---grabTool.Parent = backpack
-end,
-})
 
 -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -588,6 +503,98 @@ local Button = TPTab:CreateToggle({
     end,
 })
 ---------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------
+
+local MapTab = Window:CreateTab("🗺️ Map", nil)
+
+local Button = MapTab:CreateToggle({
+    Name = "🛠️ CTRL + Delete",
+    Callback = function()
+        _G.BToolsEnabled = not _G.BToolsEnabled
+
+        if _G.BToolsStarted == nil then
+            _G.BToolsStarted = true
+            
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub", 
+                Text = "BTools Activé!", 
+                Duration = 5
+            })
+            
+            game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+                if _G.BToolsEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 and 
+                   game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.LeftControl) then
+                    local target = game:GetService("Players").LocalPlayer:GetMouse().Target
+                    if target then
+                        target:Destroy()
+                    end
+                end
+            end)
+        end
+    end,
+})
+
+local Button = MapTab:CreateToggle({
+    Name = "📏   Reach",
+    Callback = function()
+        _G.reachMode = not _G.reachMode
+
+        if _G.reachMode then
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "Reach Enable!",
+                Duration = 5
+            })
+
+            -- Augmente la portée d'activation des ProximityPrompts
+            for _, prompt in pairs(workspace:GetDescendants()) do
+                if prompt:IsA("ProximityPrompt") then
+                    prompt.MaxActivationDistance = 100 -- Augmente la distance d'interaction
+                end
+            end
+
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "MerguezHub",
+                Text = "Reach Disable!",
+                Duration = 5
+            })
+
+            -- Rétablit la distance d'origine
+            for _, prompt in pairs(workspace:GetDescendants()) do
+                if prompt:IsA("ProximityPrompt") then
+                    prompt.MaxActivationDistance = 10 -- Distance par défaut
+                end
+            end
+        end
+    end,
+})
+
+
+local Button1 = MapTab:CreateButton({
+   Name = "🔨   Btools",
+   Callback = function()
+
+backpack = game:GetService("Players").LocalPlayer.Backpack
+
+hammer = Instance.new("HopperBin")
+hammer.Name = "Hammer"
+hammer.BinType = 4
+hammer.Parent = backpack
+
+--cloneTool = Instance.new("HopperBin")
+--cloneTool.Name = "Clone"
+--cloneTool.BinType = 3
+--cloneTool.Parent = backpack
+
+--grabTool = Instance.new("HopperBin")
+--grabTool.Name = "Grab"
+--grabTool.BinType = 2
+--grabTool.Parent = backpack
+end,
+})
+
 local Button2 = TPTab:CreateButton({
     Name = "🌞   Day",
     Callback = function()
@@ -617,8 +624,6 @@ local Button2 = TPTab:CreateButton({
         })
     end,
 })
-
-
 
 --------------------------------------------------------------------------------------------------
 
