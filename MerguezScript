@@ -766,6 +766,128 @@ local Button9 = TPTab:CreateButton({
 })
 end
 ----------------------------------------------------------------------------------------------------------------------------------
+if game.PlaceId == 84042008214503 then
+    local TPTab = Window:CreateTab("💯 ThaBronx2", nil) -- Title, Image:
+
+
+local function teleportPlayer(position)
+    local player = game.Players.LocalPlayer
+
+    -- Vérifier si le joueur et son personnage existent
+    if player and player.Character then
+        local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
+        
+        -- Vérifier si HumanoidRootPart est trouvé
+        if humanoidRootPart then
+            -- Ajouter un décalage vers le haut pour éviter les collisions avec le sol
+            local targetPosition = position + Vector3.new(0, 5, 0) -- Ajustement de 5 unités en hauteur
+            
+            -- Effectuer la téléportation
+            humanoidRootPart.CFrame = CFrame.new(targetPosition)
+            print("Téléportation réussie vers : " .. tostring(targetPosition))
+        else
+            warn("HumanoidRootPart introuvable pour le joueur : " .. player.Name)
+        end
+    else
+        warn("Le joueur ou le personnage n'est pas prêt.")
+    end
+end
+
+-- Coordonnées des îles
+local teleportPositions = {
+    Planque = Vector3.new(-948, 10.4, -1483), -- Change les coordonnées pour l'emplacement exact
+    Port = Vector3.new(632.82, 3, -3761.72), -- Exemples de coordonnées
+    Stationessence = Vector3.new(903, 4.5, -1270),
+    7eleven = Vector3.new(2290, 4.3, 616),
+    Central = Vector3.new(3311, 7.5, 287),
+    Entrepot = Vector3.new(1188, 12.1, 1224),
+    Musé = Vector3.new(2737, 56.2, 2087),
+    Bank = Vector3.new(-199, 5, -397),
+    Bijouterie = Vector3.new(-1591, 5.4, 426)
+}
+-- Boutons de téléportation
+local Button1 = TPTab:CreateButton({
+   Name = "💳 Bank",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Bank)
+        end)
+   end,
+})
+
+local Button2 = TPTab:CreateButton({
+   Name = "🚢 Port",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.port)
+        end)
+   end,
+})
+
+local Button3 = TPTab:CreateButton({
+   Name = "⛽ Station essence",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Stationessence)
+        end)
+   end,
+})
+
+local Button4 = TPTab:CreateButton({
+   Name = "7️⃣ 7Eleven",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.7eleven)
+        end)
+   end,
+})
+
+local Button5 = TPTab:CreateButton({
+   Name = "🏬 Central",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Central)
+        end)
+   end,
+})
+
+local Button6 = TPTab:CreateButton({
+   Name = "🏭 Entrepot",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Entrepot)
+        end)
+   end,
+})
+
+local Button7 = TPTab:CreateButton({
+   Name = "🖼️ Musé",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Musé)
+        end)
+   end,
+})
+
+local Button8 = TPTab:CreateButton({
+   Name = "💰 Banque",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Bank)
+        end)
+   end,
+})
+
+local Button9 = TPTab:CreateButton({
+   Name = "💍 Bijouterie",
+   Callback = function()
+        pcall(function()
+            teleportPlayer(teleportPositions.Bijouterie)
+        end)
+   end,
+})
+end
+----------------------------------------------------------------------------------------------------------------------------------
 
 
 --local TPTab = Window:CreateTab("Fight", nil) -- Title, Image
